@@ -387,17 +387,17 @@ def generate_explanation(message):
             "Verify government-related requests directly through the official government website."
         )
 
-    elif risk_results["risk_level"] == "Medium":
+    if risk_results["risk_level"] == "Medium":
         recommendations.extend([
             "Check the sender's identity carefully.",
             "Verify important claims through official channels."
-        ])
+    ])
 
-    else:
+    elif risk_results["risk_level"] == "Low":
         recommendations.extend([
             "Remain cautious when interacting with unexpected messages.",
             "Check links and sender details before taking action."
-        ])
+    ])
 
     if not reasons:
         reasons.append(
@@ -463,7 +463,6 @@ def generate_explanation(message):
     recommendations = list(dict.fromkeys(recommendations))
 
     return {
-        "reasons": reasons,
-        "recommendations": recommendations
-    }
-
+    "reasons": reasons,
+    "recommendations": list(dict.fromkeys(recommendations))
+}

@@ -162,7 +162,6 @@ result = calculate_risk(
     "Visit http://192.168.1.10/bank-verify/login"
 )
 
-print("DEBUG - Actual risk result:", result)
 assert result["score"] == 2, (
     f"Expected score 2, but got {result['score']}. "
     f"Full result: {result}"
@@ -606,3 +605,34 @@ assert any(
 print("Test 5 passed: Dangerous instructions are not hidden by educational wording.")
 
 print("All 5 educational context tests passed!")
+
+# Test 1: Low-risk recommendations
+result = generate_explanation("Hello, have a nice day.")
+assert "Remain cautious when interacting with unexpected messages." in result["recommendations"]
+assert "Check links and sender details before taking action." in result["recommendations"]
+assert "Report the suspicious message." not in result["recommendations"]
+
+print("Test 1 passed: Low-risk recommendations.")
+
+# Test 2: Medium-risk recommendations
+result = generate_explanation("Please verify your account immediately.")
+assert "Check the sender's identity carefully." in result["recommendations"]
+assert "Verify important claims through official channels." in result["recommendations"]
+assert "Report the suspicious message." not in result["recommendations"]
+
+print("Test 2 passed: Medium-risk recommendations.")
+
+# Test 3: High-risk recommendations
+message = (
+    "URGENT! Your account is blocked. "
+    "Verify your account immediately at "
+    "https://bank-verify.example.com/login"
+)
+result = generate_explanation(message)
+
+assert "Contact the organization through its official website or phone number." in result["recommendations"]
+assert "Report the suspicious message." in result["recommendations"]
+assert "Remain cautious when interacting with unexpected messages." not in result["recommendations"]
+assert "Check links and sender details before taking action." not in result["recommendations"]
+
+print("Test 3 passed: High-risk recommendations.")
