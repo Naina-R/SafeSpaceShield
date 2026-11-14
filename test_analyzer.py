@@ -127,6 +127,60 @@ print("Test 3 passed: Suspicious-pattern scoring.")
 
 print("All 3 risk scoring tests passed!")
 
+print("\nEDUCATIONAL CONTEXT RISK SCORING TESTS")
+print("--------------------------------------")
+
+# Test 1: Harmless cybersecurity training
+result = calculate_risk(
+    "Our cybersecurity training explains that your computer is infected and teaches employees to contact Microsoft support."
+)
+
+assert result["score"] == 0
+assert result["risk_level"] == "Low"
+
+print("Test 1 passed: Harmless cybersecurity training scores Low.")
+
+# Test 2: Harmless IT training
+result = calculate_risk(
+    "Our IT training explains why employees should grant remote access only when authorized."
+)
+
+assert result["score"] == 0
+assert result["risk_level"] == "Low"
+
+print("Test 2 passed: Harmless IT training scores Low.")
+
+# Test 3: Genuine Microsoft support scam
+result = calculate_risk(
+    "Your computer is infected! Call Microsoft support immediately."
+)
+
+assert result["score"] == 3
+assert result["risk_level"] == "Medium"
+
+print("Test 3 passed: Microsoft support scam retains its risk score.")
+
+# Test 4: Genuine remote access scam
+result = calculate_risk(
+    "Grant remote access now and install remote access software."
+)
+
+assert result["score"] == 2
+assert result["risk_level"] == "Medium"
+
+print("Test 4 passed: Remote access scam retains its risk score.")
+
+# Test 5: Educational wording with dangerous instructions
+result = calculate_risk(
+    "This cybersecurity training explains that your computer is infected. Call Microsoft support immediately."
+)
+
+assert result["score"] == 3
+assert result["risk_level"] == "Medium"
+
+print("Test 5 passed: Dangerous instructions retain their risk score.")
+
+print("All 5 educational context risk tests passed!")
 
 print("\nEXPLANATION TESTS")
 print("-----------------")
@@ -413,3 +467,78 @@ for test in test_cases:
     print(f"Passed: {test['expected']}")
 
 print("All 3 technical support explanation tests passed!")
+
+print("\nEDUCATIONAL CONTEXT EXPLANATION TESTS")
+print("-------------------------------------")
+
+# Test 1: Harmless cybersecurity training
+result = generate_explanation(
+    "Our cybersecurity training explains that your computer is infected and teaches employees to contact Microsoft support."
+)
+
+assert not any(
+    "fake virus" in reason or "impersonating Microsoft" in reason
+    for reason in result["reasons"]
+)
+
+print("Test 1 passed: Harmless cybersecurity training.")
+
+# Test 2: Harmless IT education
+result = generate_explanation(
+    "Our IT training explains why employees should grant remote access only when authorized."
+)
+
+assert not any(
+    "remote access to your device" in reason
+    for reason in result["reasons"]
+)
+
+print("Test 2 passed: Harmless IT education.")
+
+# Test 3: Genuine Microsoft support scam
+result = generate_explanation(
+    "Your computer is infected! Call Microsoft support immediately."
+)
+
+assert any(
+    "fake virus" in reason
+    for reason in result["reasons"]
+)
+
+assert any(
+    "impersonating Microsoft" in reason
+    for reason in result["reasons"]
+)
+
+print("Test 3 passed: Microsoft support scam warning.")
+
+# Test 4: Genuine remote access scam
+result = generate_explanation(
+    "Grant remote access now and install remote access software."
+)
+
+assert any(
+    "remote access to your device" in reason
+    for reason in result["reasons"]
+)
+
+print("Test 4 passed: Remote access scam warning.")
+
+# Test 5: Educational wording with dangerous instructions
+result = generate_explanation(
+    "This cybersecurity training explains that your computer is infected. Call Microsoft support immediately."
+)
+
+assert any(
+    "fake virus" in reason
+    for reason in result["reasons"]
+)
+
+assert any(
+    "impersonating Microsoft" in reason
+    for reason in result["reasons"]
+)
+
+print("Test 5 passed: Dangerous instructions are not hidden by educational wording.")
+
+print("All 5 educational context tests passed!")

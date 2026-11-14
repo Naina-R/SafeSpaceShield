@@ -166,15 +166,55 @@ def calculate_risk(message):
         )
     ]
 
-    # Calculate risk score without double-counting.
-    score = (
-        sum(
-            3 if keyword in sensitive_keywords else 1
-            for keyword in keyword_results
-        )
-        + (len(url_results) * 2)
-        + (len(ip_urls_without_pattern) * 2)
+    # Identify educational context.
+    message_lower = message.lower()
+
+    educational_context = any(
+        phrase in message_lower
+        for phrase in [
+            "cybersecurity training",
+            "security awareness course",
+            "security awareness training",
+            "it training",
+            "training explains",
+            "training teaches",
+            "awareness course"
+        ]
     )
+
+    # Identify dangerous technical-support instructions.
+    risky_action_context = any(
+        phrase in message_lower
+        for phrase in [
+            "call microsoft support immediately",
+            "call technical support immediately",
+            "grant remote access now",
+            "install remote access software now",
+            "grant remote access immediately",
+            "install remote access software immediately"
+        ]
+    )
+
+    technical_support_keywords = [
+        "your computer is infected",
+        "your device is infected",
+        "virus detected",
+        "grant remote access",
+        "install remote access software",
+        "remote access required",
+        "microsoft support"
+    ]
+
+    # Calculate risk score without double-counting.
+    score = sum(
+        3 if keyword in sensitive_keywords else 1
+        for keyword in keyword_results
+        if not (
+            educational_context
+            and not risky_action_context
+            and keyword in technical_support_keywords
+        )
+    ) + (len(url_results) * 2) + (len(ip_urls_without_pattern) * 2)
 
     if score >= 5:
         risk_level = "High"
@@ -204,6 +244,21 @@ def generate_explanation(message):
 
     reasons = []
     recommendations = []
+
+    message_lower = message.lower()
+
+    educational_context = any(
+        phrase in message_lower
+        for phrase in [
+            "cybersecurity training",
+            "security awareness course",
+            "security awareness training",
+            "it training",
+            "training explains",
+            "training teaches",
+            "awareness course"
+        ]
+    )
 
     if keyword_results:
         reasons.append(
@@ -339,47 +394,59 @@ def generate_explanation(message):
         )
 
     # Technical support scam warning
-    if any(
-        keyword in keyword_results
-        for keyword in [
-            "your computer is infected",
-            "your device is infected",
-            "virus detected"
+    risky_action_context = any(
+        phrase in message_lower
+        for phrase in [
+            "call microsoft support immediately",
+            "call technical support immediately",
+            "grant remote access now",
+            "install remote access software now",
+            "grant remote access immediately",
+            "install remote access software immediately"
         ]
-    ):
-        reasons.append(
-            "The message may be using a fake virus or infection alert to frighten the recipient."
-        )
-        recommendations.append(
-            "Do not call phone numbers or follow links from unexpected virus alerts. Use trusted security software to check your device."
     )
 
+    if not educational_context or risky_action_context:
 
-    # Remote access warning
-    if any(
-        keyword in keyword_results
-        for keyword in [
-            "grant remote access",
-            "install remote access software",
-            "remote access required"
-        ]
-    ):
-        reasons.append(
-            "The message requests remote access to your device, which could allow an untrusted person to control it."
-        )
-        recommendations.append(
-            "Never grant remote access to someone who contacts you unexpectedly. Verify technical support independently."
-    )
+        if any(
+            keyword in keyword_results
+            for keyword in [
+                "your computer is infected",
+                "your device is infected",
+                "virus detected"
+            ]
+        ):
+            reasons.append(
+                "The message may be using a fake virus or infection alert to frighten the recipient."
+            )
+            recommendations.append(
+                "Do not call phone numbers or follow links from unexpected virus alerts. Use trusted security software to check your device."
+            )
 
+        # Remote access warning
+        if any(
+            keyword in keyword_results
+            for keyword in [
+                "grant remote access",
+                "install remote access software",
+                "remote access required"
+            ]
+        ):
+            reasons.append(
+                "The message requests remote access to your device, which could allow an untrusted person to control it."
+            )
+            recommendations.append(
+                "Never grant remote access to someone who contacts you unexpectedly. Verify technical support independently."
+            )
 
-# Technical support impersonation warning
-    if "microsoft support" in keyword_results:
-        reasons.append(
-            "The sender may be impersonating Microsoft technical support."
-        )
-        recommendations.append(
-            "Contact Microsoft through its official support website instead of using contact details in the message."
-        )
+        # Technical support impersonation warning
+        if "microsoft support" in keyword_results:
+            reasons.append(
+                "The sender may be impersonating Microsoft technical support."
+            )
+            recommendations.append(
+                "Contact Microsoft through its official support website instead of using contact details in the message."
+            )
 
 # Remove duplicate recommendations while preserving order.
     recommendations = list(dict.fromkeys(recommendations))
