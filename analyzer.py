@@ -76,25 +76,27 @@ def detect_suspicious_keywords(message):
     return detected_keywords
 
 
+
 def detect_suspicious_url_patterns(message):
+
     detected_url_patterns = []
 
     message = message.lower()
 
-    # Extract URLs from the message
+    # Extract domain-based and IP-based URLs.
     urls = re.findall(
-        r'''(?:https?://|www\.)[^\s<>"']+''',
+        r'''(?<![@\w.-])(?:https?://|www\.)?(?:(?:[A-Za-z0-9-]+\.)+[A-Za-z]{2,}|(?:\d{1,3}\.){3}\d{1,3})(?::\d{1,5})?(?:[/?#][^\s<>"']*)?''',
         message,
         flags=re.IGNORECASE
     )
 
-    # Remove punctuation at the end of URLs
+    # Remove punctuation at the end of URLs.
     urls = [
         url.rstrip(".,!?;:)]}")
         for url in urls
     ]
 
-    # Check suspicious patterns only inside URLs
+    # Check suspicious patterns only inside URLs.
     for url in urls:
         for pattern in SUSPICIOUS_URL_KEYWORDS:
             if pattern in url and pattern not in detected_url_patterns:
@@ -156,15 +158,24 @@ def calculate_risk(message):
 
     sensitive_keywords = ["otp", "password", "bank details"]
 
-    # Identify IP URLs that do not already contain
-    # a suspicious URL pattern.
-    ip_urls_without_pattern = [
-        url for url in ip_results
-        if not any(
-            pattern in url.lower()
+
+    # Count IP URLs only when their suspicious pattern
+    # has not already contributed to the risk score.
+
+    ip_urls_without_pattern = []
+
+    for ip_url in ip_results:
+
+        ip_url_lower = ip_url.lower()
+
+        has_detected_pattern = any(
+            pattern in ip_url_lower and pattern in url_results
             for pattern in SUSPICIOUS_URL_KEYWORDS
         )
-    ]
+
+        if not has_detected_pattern:
+            ip_urls_without_pattern.append(ip_url)
+
 
     # Identify educational context.
     message_lower = message.lower()

@@ -83,6 +83,59 @@ for pattern in new_patterns:
     assert pattern in result
     print(f"Passed: {pattern}")
 
+print("\nURL EXTRACTION EDGE CASE TESTS")
+print("--------------------------------")
+
+# Test 1: URL inside brackets
+assert detect_suspicious_url_patterns(
+    "(https://bank-verify.example.com/login)."
+) == ["bank-verify"]
+print("Test 1 passed: URL inside brackets.")
+
+# Test 2: Trailing punctuation
+assert detect_suspicious_url_patterns(
+    "https://bank-verify.example.com/login, today."
+) == ["bank-verify"]
+print("Test 2 passed: Trailing punctuation.")
+
+# Test 3: www URL
+assert detect_suspicious_url_patterns(
+    "www.bank-verify.example.com/login"
+) == ["bank-verify"]
+print("Test 3 passed: www URL.")
+
+# Test 4: Bare domain
+assert detect_suspicious_url_patterns(
+    "bank-verify.example.com/login"
+) == ["bank-verify"]
+print("Test 4 passed: Bare domain.")
+
+# Test 5: URL with port
+assert detect_suspicious_url_patterns(
+    "https://bank-verify.example.com:8080/login"
+) == ["bank-verify"]
+print("Test 5 passed: URL with port.")
+
+# Test 6: URL with fragment
+assert detect_suspicious_url_patterns(
+    "https://bank-verify.example.com/login#verify"
+) == ["bank-verify"]
+print("Test 6 passed: URL with fragment.")
+
+# Test 7: Ordinary bare domain
+assert detect_suspicious_url_patterns(
+    "Visit example.com for information."
+) == []
+print("Test 7 passed: Ordinary bare domain.")
+
+# Test 8: Email address
+assert detect_suspicious_url_patterns(
+    "Contact support@bank-verify.example.com"
+) == []
+print("Test 8 passed: Email address is not treated as a URL.")
+
+print("All 8 URL extraction edge case tests passed!")
+
 print("\nFALSE POSITIVE TESTS")
 print("--------------------")
 
@@ -108,21 +161,32 @@ print("------------------")
 result = calculate_risk(
     "Visit http://192.168.1.10/bank-verify/login"
 )
-assert result["score"] == 2
+
+print("DEBUG - Actual risk result:", result)
+assert result["score"] == 2, (
+    f"Expected score 2, but got {result['score']}. "
+    f"Full result: {result}"
+)
 print("Test 1 passed: No double-counting.")
 
 # Test 2: IP URL without suspicious pattern.
 result = calculate_risk(
     "Visit http://192.168.1.10/login"
 )
-assert result["score"] == 2
+assert result["score"] == 2, (
+    f"Expected score 2, but got {result['score']}. "
+    f"Full result: {result}"
+)
 print("Test 2 passed: IP-only scoring.")
 
 # Test 3: Suspicious pattern without IP address.
 result = calculate_risk(
     "Visit https://bank-verify.example.com/login"
 )
-assert result["score"] == 2
+assert result["score"] == 2, (
+    f"Expected score 2, but got {result['score']}. "
+    f"Full result: {result}"
+)
 print("Test 3 passed: Suspicious-pattern scoring.")
 
 print("All 3 risk scoring tests passed!")
