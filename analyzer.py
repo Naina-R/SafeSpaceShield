@@ -186,6 +186,8 @@ def calculate_risk(message):
             "cybersecurity training",
             "security awareness course",
             "security awareness training",
+            "security awareness message",
+            "security awareness",
             "it training",
             "training explains",
             "training teaches",
@@ -202,7 +204,16 @@ def calculate_risk(message):
             "grant remote access now",
             "install remote access software now",
             "grant remote access immediately",
-            "install remote access software immediately"
+            "install remote access software immediately",
+            "share your otp immediately",
+            "share your password immediately",
+            "share your passwords immediately",
+            "send your otp immediately",
+            "send your password immediately",
+            "provide your otp immediately",
+            "provide your password immediately",
+            "enter your otp immediately",
+            "enter your password immediately"
         ]
     )
 
@@ -223,8 +234,12 @@ def calculate_risk(message):
         if not (
             educational_context
             and not risky_action_context
-            and keyword in technical_support_keywords
+            and (
+                keyword in technical_support_keywords
+                or keyword in sensitive_keywords
+            )
         )
+
     ) + (len(url_results) * 2) + (len(ip_urls_without_pattern) * 2)
 
     if score >= 5:
@@ -264,6 +279,8 @@ def generate_explanation(message):
             "cybersecurity training",
             "security awareness course",
             "security awareness training",
+            "security awareness message",
+            "security awareness",
             "it training",
             "training explains",
             "training teaches",

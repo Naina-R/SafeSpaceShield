@@ -243,7 +243,31 @@ assert result["risk_level"] == "Medium"
 
 print("Test 5 passed: Dangerous instructions retain their risk score.")
 
-print("All 5 educational context risk tests passed!")
+# Test 6: Harmless security awareness message
+result = calculate_risk(
+    "Hello, this is a security awareness message. "
+    "Never share your passwords or OTPs with anyone."
+)
+
+assert result["score"] == 0
+assert result["risk_level"] == "Low"
+
+print("Test 6 passed: Harmless security awareness message scores Low.")
+
+
+# Test 7: Educational wording must not hide an OTP scam
+result = calculate_risk(
+    "This security awareness message explains online safety. "
+    "Your bank account is blocked. "
+    "Share your OTP immediately to restore access."
+)
+
+assert result["score"] >= 5
+assert result["risk_level"] == "High"
+
+print("Test 7 passed: Educational wording does not hide an OTP scam.")
+
+print("All 7 educational context risk tests passed!")
 
 print("\nEXPLANATION TESTS")
 print("-----------------")
