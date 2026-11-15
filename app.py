@@ -68,37 +68,45 @@ st.markdown(
 
 st.divider()
 
+
 # Message input section
-st.header("🔍 Analyze a Message")
+with st.container(border=True):
 
-st.write(
-    "Paste the message you want to check. "
-    "SafeSpace Shield will analyze it for potential warning signs."
-)
+    st.header("🔍 Analyze a Message")
 
-message = st.text_area(
-    "Your message",
-    placeholder=(
-        "Example: Your bank account is blocked! "
-        "Verify your account immediately..."
-    ),
-    height=180,
-    max_chars=5000,
-    key="message_input"
-)
+    st.write(
+        "Paste the message you want to check. "
+        "SafeSpace Shield will analyze it for potential warning signs."
+    )
 
-st.button(
-    "🗑️ Clear Message",
-    on_click=clear_message
-)
+    message = st.text_area(
+        "Your message",
+        placeholder=(
+            "Example: Your bank account is blocked! "
+            "Verify your account immediately..."
+        ),
+        height=180,
+        max_chars=5000,
+        key="message_input"
+    )
 
-st.caption(
-    "Your message is analyzed locally by the application. "
-    "Avoid entering real passwords, OTPs, or other sensitive information."
-)
+    st.button(
+        "🗑️ Clear Message",
+        on_click=clear_message
+    )
+
+    st.caption(
+        "Your message is analyzed locally by the application. "
+        "Avoid entering real passwords, OTPs, or other sensitive information."
+    )
+
 
 # Analysis button
-if st.button("🔍 Analyze Message", use_container_width=True):
+if st.button(
+    "🔍 Analyze Message",
+    use_container_width=True,
+    type="primary"
+):
 
     if message.strip():
 
@@ -138,7 +146,9 @@ if st.button("🔍 Analyze Message", use_container_width=True):
 
             st.metric("Overall Risk Score", risk_score)
 
-        # Detection metrics
+    # Detection metrics
+    with st.container(border=True):
+
         st.subheader("📊 Detection Summary")
 
         col1, col2, col3 = st.columns(3)
@@ -147,60 +157,58 @@ if st.button("🔍 Analyze Message", use_container_width=True):
         col2.metric("URL Patterns", len(url_results))
         col3.metric("IP-Based URLs", len(ip_results))
 
-        # Suspicious keywords
-        st.subheader("🔎 Detected Suspicious Keywords")
+    # Suspicious keywords
+    st.subheader("🔎 Detected Suspicious Keywords")
 
-        if keyword_results:
-            for keyword in keyword_results:
-                st.warning(keyword)
-        else:
-            st.success("No suspicious keywords detected.")
-
-        # URL security analysis
-        st.subheader("🔗 URL Security Analysis")
-
-        if url_results:
-            st.markdown("**Suspicious URL patterns detected:**")
-
-            for pattern in url_results:
-                st.warning(pattern)
-        else:
-            st.success("No suspicious URL patterns detected.")
-
-        if ip_results:
-            st.markdown("**IP-Based URLs detected:**")
-
-            for ip_url in ip_results:
-                st.warning(ip_url)
-        else:
-            st.info("No IP-based URLs detected.")
-
-        # Explanations and recommendations
-        col1, col2 = st.columns(2)
-
-        with col1:
-            with st.container(border=True):
-                st.subheader("🧠 Why Was It Flagged?")
-
-                for reason in explanation_results["reasons"]:
-                    st.markdown(f"- {reason}")
-
-        with col2:
-            with st.container(border=True):
-                st.subheader("🛡️ Safety Recommendations")
-
-                for recommendation in explanation_results["recommendations"]:
-                    st.markdown(f"- {recommendation}")
-
-        st.divider()
-
-        st.caption(
-            "SafeSpace Shield provides an initial automated assessment. "
-            "A low-risk result does not guarantee that a message is safe. "
-            "Always verify important requests through official channels."
-        )
-
+    if keyword_results:
+        st.warning(" • ".join(keyword_results))
     else:
+        st.success("No suspicious keywords detected.")
+
+    # URL security analysis
+    st.subheader("🔗 URL Security Analysis")
+
+    if url_results:
+        st.markdown("**Suspicious URL patterns detected:**")
+        st.warning(" • ".join(url_results))
+    else:
+        st.success("No suspicious URL patterns detected.")
+
+    if ip_results:
+        st.markdown("**IP-Based URLs detected:**")
+
+        for ip_url in ip_results:
+            st.warning(ip_url)
+    else:
+        st.info("No IP-based URLs detected.")
+
+    # Explanations and recommendations
+    col1, col2 = st.columns(2)
+
+    with col1:
+        with st.container(border=True):
+            st.subheader("🧠 Why Was It Flagged?")
+
+            for reason in explanation_results["reasons"]:
+                st.markdown(f"- {reason}")
+
+    with col2:
+        with st.container(border=True):
+            st.subheader("🛡️ Safety Recommendations")
+
+            for recommendation in explanation_results["recommendations"]:
+                st.markdown(f"- {recommendation}")
+
+    st.divider()
+
+    st.caption(
+        "SafeSpace Shield provides an initial automated assessment. "
+        "A low-risk result does not guarantee that a message is safe. "
+        "Always verify important requests through official channels."
+    )
+
+
+else:
         st.warning("Please enter a message before analyzing.")
 
 # Footer
