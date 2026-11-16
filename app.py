@@ -21,6 +21,14 @@ st.set_page_config(
 with st.sidebar:
     st.title("🛡️ SafeSpace Shield")
 
+    st.divider()
+
+    dark_mode = st.toggle(
+        "🌙 Dark Mode",
+        value=False,
+        key="dark_mode"
+    )
+
     st.markdown("### About")
 
     st.write(
@@ -45,6 +53,117 @@ with st.sidebar:
     st.divider()
 
     st.caption("Think Before You Click.")
+
+
+# Theme styling
+if dark_mode:
+    st.markdown(
+        """
+        <style>
+        .stApp,
+        [data-testid="stAppViewContainer"] {
+            background-color: #0B1220;
+            color: #E5E7EB;
+        }
+
+        [data-testid="stHeader"] {
+            background-color: #0B1220;
+        }
+
+        [data-testid="stSidebar"] {
+            background-color: #111C30;
+        }
+
+        [data-testid="stSidebar"] * {
+            color: #E5E7EB;
+        }
+
+        [data-testid="stMarkdownContainer"] p,
+        [data-testid="stMarkdownContainer"] li,
+        [data-testid="stMarkdownContainer"] h1,
+        [data-testid="stMarkdownContainer"] h2,
+        [data-testid="stMarkdownContainer"] h3 {
+            color: #E5E7EB;
+        }
+
+        [data-testid="stTextArea"] textarea {
+            background-color: #172338;
+            color: #FFFFFF;
+            border: 1px solid #40516B;
+        }
+
+        [data-testid="stTextArea"] textarea::placeholder {
+            color: #AAB7C8;
+        }
+
+        [data-testid="stVerticalBlockBorderWrapper"] {
+            background-color: #142137;
+            border-color: #263750;
+            border-radius: 12px;
+        }
+
+        .stButton button {
+            border-radius: 8px;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
+else:
+    st.markdown(
+        """
+        <style>
+        .stApp,
+        [data-testid="stAppViewContainer"] {
+            background-color: #F5F8FC;
+            color: #1F2937;
+        }
+
+        [data-testid="stHeader"] {
+            background-color: #F5F8FC;
+        }
+
+        [data-testid="stSidebar"] {
+            background-color: #EAF0F8;
+        }
+
+        [data-testid="stSidebar"] * {
+            color: #1F2937;
+        }
+
+        [data-testid="stMarkdownContainer"] p,
+        [data-testid="stMarkdownContainer"] li,
+        [data-testid="stMarkdownContainer"] h1,
+        [data-testid="stMarkdownContainer"] h2,
+        [data-testid="stMarkdownContainer"] h3 {
+            color: #1F2937;
+        }
+
+        [data-testid="stTextArea"] textarea {
+            background-color: #FFFFFF;
+            color: #1F2937;
+            border: 1px solid #CBD5E1;
+        }
+
+        [data-testid="stTextArea"] textarea::placeholder {
+            color: #64748B;
+        }
+
+        [data-testid="stVerticalBlockBorderWrapper"] {
+            background-color: #FFFFFF;
+            border-color: #D8E1EC;
+            border-radius: 12px;
+        }
+
+        .stButton button {
+            border-radius: 8px;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
 
 # Function to clear the message
 def clear_message():
@@ -79,17 +198,27 @@ with st.container(border=True):
         "SafeSpace Shield will analyze it for potential warning signs."
     )
 
-    message = st.text_area(
-        "Your message",
-        placeholder=(
-            "Example: Your bank account is blocked! "
-            "Verify your account immediately..."
-        ),
-        height=180,
-        max_chars=5000,
-        key="message_input"
-    )
+    # Message analysis form
+    with st.form(key="analysis_form"):
 
+        message = st.text_area(
+            "Your message",
+            placeholder=(
+                "Example: Your bank account is blocked! "
+                "Verify your account immediately..."
+            ),
+            height=180,
+            max_chars=5000,
+            key="message_input"
+        )
+
+        analyze_clicked = st.form_submit_button(
+            "🔍 Analyze Message",
+            use_container_width=True,
+            type="primary"
+        )
+
+    # Clear message button
     st.button(
         "🗑️ Clear Message",
         on_click=clear_message
@@ -102,12 +231,9 @@ with st.container(border=True):
 
 
 
+
 # Analysis button
-if st.button(
-    "🔍 Analyze Message",
-    use_container_width=True,
-    type="primary"
-):
+if analyze_clicked:
 
     if message.strip():
 
