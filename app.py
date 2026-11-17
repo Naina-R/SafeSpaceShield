@@ -102,9 +102,38 @@ if dark_mode:
             border-radius: 12px;
         }
 
+        /* Clear Message button */
         .stButton button {
+            background-color: transparent;
+            color: #60A5FA;
+            border: 1px solid #40516B;
             border-radius: 8px;
-        }
+            transition: all 0.2s ease;
+    }
+
+        /* Clear Message hover effect */
+        .stButton button:hover {
+            background-color: #1E3A5F;
+            color: #FFFFFF;
+            border-color: #60A5FA;
+    }
+
+        /* Analyze Message button */
+        [data-testid="stFormSubmitButton"] button {
+            background-color: #2563EB;
+            color: #FFFFFF;
+            border: 1px solid #2563EB;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+}
+
+        /* Analyze Message hover effect */
+        [data-testid="stFormSubmitButton"] button:hover {
+            background-color: #1D4ED8;
+            border-color: #1D4ED8;
+            color: #FFFFFF;
+}
         </style>
         """,
         unsafe_allow_html=True
@@ -156,9 +185,137 @@ else:
             border-radius: 12px;
         }
 
+        
+        /* Clear Message button */
         .stButton button {
+            background-color: #FFFFFF !important;
+            color: #1D4ED8 !important;
+            border: 1px solid #94A3B8 !important;
             border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s ease;
         }
+
+        /* Clear Message hover */
+        .stButton button:hover {
+            background-color: #DBEAFE !important;
+            color: #1D4ED8 !important;
+            border-color: #2563EB !important;
+        }
+
+        /* Analyze Message button */
+        [data-testid="stFormSubmitButton"] button {
+            background-color: #2563EB !important;
+            color: #FFFFFF !important;
+            border: 1px solid #2563EB !important;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        /* Analyze Message hover */
+        [data-testid="stFormSubmitButton"] button:hover {
+            background-color: #1D4ED8 !important;
+            color: #FFFFFF !important;
+            border-color: #1D4ED8 !important;
+        }
+
+        /* Sidebar text */
+        [data-testid="stSidebar"] {
+            color: #1F2937 !important;
+        }
+
+        [data-testid="stSidebar"] [data-testid="stMarkdownContainer"],
+        [data-testid="stSidebar"] [data-testid="stWidgetLabel"],
+        [data-testid="stSidebar"] [data-testid="stCaptionContainer"] {
+            color: #1F2937 !important;
+        }
+
+        /* Sidebar expand and collapse controls */
+        [data-testid="stHeader"] button,
+        [data-testid="stSidebar"] button {
+            color: #1F2937 !important;
+        }
+
+
+        /* Force Analyze button text to white */
+        [data-testid="stFormSubmitButton"] button,
+        [data-testid="stFormSubmitButton"] button *,
+        [data-testid="stFormSubmitButton"] button p {
+            color: #FFFFFF !important;
+        }
+
+        /* Make sidebar controls visible */
+        [data-testid="stSidebarCollapsedControl"] button,
+        [data-testid="stSidebarCollapseButton"] button,
+       
+
+        /* Make sidebar control icons visible */
+        [data-testid="stSidebarCollapsedControl"] svg,
+        [data-testid="stSidebarCollapseButton"] svg,
+        
+        }
+
+        /* Dark Mode toggle label */
+        [data-testid="stToggle"] label,
+        [data-testid="stToggle"] label *,
+        [data-testid="stSidebar"] label {
+            color: #1F2937 !important;
+        }
+
+        /* Dark Mode toggle switch */
+        [data-testid="stToggle"] [role="switch"] {
+            background-color: #CBD5E1 !important;
+            border: 1px solid #64748B !important;
+        }
+
+        /* Dark Mode toggle switch when enabled */
+        [data-testid="stToggle"] [role="switch"][aria-checked="true"] {
+            background-color: #2563EB !important;
+            border-color: #2563EB !important;
+        }
+
+        /* Toggle keyboard focus */
+        [data-testid="stToggle"] [role="switch"]:focus-visible {
+            outline: 2px solid #2563EB !important;
+            outline-offset: 3px;
+        }
+
+        /* Make the Dark Mode toggle track visible */
+        [data-testid="stToggle"] [role="switch"] {
+            background-color: #64748B !important;
+            border: 2px solid #475569 !important;
+            opacity: 1 !important;
+        }
+
+        /* Dark Mode toggle ON */
+        [data-testid="stToggle"] [role="switch"][aria-checked="true"] {
+            background-color: #2563EB !important;
+            border-color: #1D4ED8 !important;
+        }
+
+        /* Sidebar collapse control */
+        [data-testid="stSidebarCollapseButton"] {
+            background-color: #DBEAFE !important;
+            color: #1D4ED8 !important;
+            opacity: 1 !important;
+        }
+
+        /* Sidebar expand control */
+        [data-testid="stSidebarCollapsedControl"] {
+            background-color: #DBEAFE !important;
+            color: #1D4ED8 !important;
+            opacity: 1 !important;
+        }
+
+        /* Sidebar control icons */
+        [data-testid="stSidebarCollapseButton"] svg,
+        [data-testid="stSidebarCollapsedControl"] svg {
+            color: #1D4ED8 !important;
+            stroke: #1D4ED8 !important;
+            opacity: 1 !important;
+        }
+
+        
         </style>
         """,
         unsafe_allow_html=True
