@@ -9,6 +9,36 @@ from analyzer import (
     generate_explanation
 )
 
+# Sample messages for demonstration
+SAMPLE_MESSAGES = {
+    "🔴 High Risk – Bank phishing": (
+        "URGENT! Your bank account has been blocked. "
+        "Verify your account immediately at "
+        "http://bank-verify.com/login. "
+        "Enter your password and OTP now!"
+    ),
+
+    "🟠 Medium Risk – Delivery message": (
+        "Your delivery is pending. "
+        "Please check the delivery update at "
+        "http://delivery-update.com/pay"
+    ),
+
+    "🟢 Low Risk – Harmless message": (
+        "Good morning! Our computer science department "
+        "has scheduled a programming workshop for Friday "
+        "at 10 AM in Lab 2. Please bring your laptop."
+    )
+}
+
+# Function to load a selected sample message
+def load_sample_message():
+    selected_sample = st.session_state["sample_choice"]
+
+    if selected_sample in SAMPLE_MESSAGES:
+        st.session_state["message_input"] = SAMPLE_MESSAGES[selected_sample]
+
+
 # Page configuration
 st.set_page_config(
     page_title="SafeSpace Shield",
@@ -323,8 +353,11 @@ else:
 
 
 # Function to clear the message
+
 def clear_message():
     st.session_state["message_input"] = ""
+    st.session_state["sample_choice"] = "Choose a sample..."
+
 
 # Application heading
 st.title("🛡️ SafeSpace Shield")
@@ -355,6 +388,24 @@ with st.container(border=True):
         "SafeSpace Shield will analyze it for potential warning signs."
     )
 
+    # Sample message selector
+    st.selectbox(
+        "Try a sample message",
+        options=[
+            "Choose a sample...",
+            "🔴 High Risk – Bank phishing",
+            "🟠 Medium Risk – Delivery message",
+            "🟢 Low Risk – Harmless message"
+        ],
+        key="sample_choice",
+        on_change=load_sample_message,
+        help="Choose a sample message to see how SafeSpace Shield analyzes different risk levels."
+    )
+
+    st.caption(
+    "Select a sample message above, or enter your own message below."
+    )
+    
     # Message analysis form
     with st.form(key="analysis_form"):
 
