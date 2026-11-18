@@ -405,6 +405,8 @@ with st.container(border=True):
     st.caption(
     "Select a sample message above, or enter your own message below."
     )
+
+    st.divider()
     
     # Message analysis form
     with st.form(key="analysis_form"):

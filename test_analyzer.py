@@ -660,3 +660,49 @@ assert "Remain cautious when interacting with unexpected messages." not in resul
 assert "Check links and sender details before taking action." not in result["recommendations"]
 
 print("Test 3 passed: High-risk recommendations.")
+
+
+print("\nINPUT ROBUSTNESS TESTS")
+print("----------------------")
+
+# Test 1: Empty message
+message = ""
+
+assert detect_suspicious_keywords(message) == []
+assert detect_suspicious_url_patterns(message) == []
+assert detect_ip_based_urls(message) == []
+
+result = calculate_risk(message)
+assert result["score"] == 0
+assert result["risk_level"] == "Low"
+
+print("Test 1 passed: Empty message.")
+
+# Test 2: Whitespace-only message
+message = "     \n\t     "
+
+assert detect_suspicious_keywords(message) == []
+assert detect_suspicious_url_patterns(message) == []
+assert detect_ip_based_urls(message) == []
+
+result = calculate_risk(message)
+assert result["score"] == 0
+assert result["risk_level"] == "Low"
+
+print("Test 2 passed: Whitespace-only message.")
+
+# Test 3: Long harmless message (5000 characters)
+message = ("Hello, have a wonderful day! " * 200)[:5000]
+
+assert len(message) == 5000
+assert detect_suspicious_keywords(message) == []
+assert detect_suspicious_url_patterns(message) == []
+assert detect_ip_based_urls(message) == []
+
+result = calculate_risk(message)
+assert result["score"] == 0
+assert result["risk_level"] == "Low"
+
+print("Test 3 passed: 5000-character harmless message.")
+
+print("All input robustness tests passed!")

@@ -1,4 +1,3 @@
-
 # SafeSpace Shield
 
 ### Think Before You Click. Understand Before You Trust.
@@ -7,27 +6,33 @@ SafeSpace Shield is a cybersecurity awareness application that analyzes potentia
 
 ## Problem
 
-People frequently receive suspicious messages pretending to be from banks, delivery services, and other trusted organizations. These messages may use urgency, impersonation, or malicious-looking links to trick recipients into revealing sensitive information.
+People frequently receive suspicious messages pretending to be from banks, delivery services, government organizations, and other trusted sources. These messages may use urgency, impersonation, or suspicious links to trick recipients into revealing sensitive information.
 
 ## Solution
 
-SafeSpace Shield helps users understand potential warning signs in suspicious messages through a simple, accessible interface.
+SafeSpace Shield helps users recognize potential warning signs in suspicious messages through a simple, accessible interface. It analyzes message content, assigns a heuristic risk level, explains detected indicators, and suggests safer actions.
 
 ## Features
 
-- Analyze pasted text messages.
-- Detect suspicious words and phrases.
+- Analyze pasted text messages (up to 5,000 characters).
+- Detect suspicious keywords and phrases.
 - Identify selected suspicious URL patterns.
-- Classify messages as Low, Medium, or High risk.
+- Detect valid IP-address-based URLs.
+- Classify messages into Low, Medium, and High risk levels.
+- Display a risk score and detection metrics.
 - Explain why a message may be suspicious.
-- Provide practical safety recommendations.
-- Process messages locally without requiring a paid API.
+- Provide risk-based safety recommendations.
+- Include sample messages for High, Medium, and Low risk demonstrations.
+- Support Light Mode and Dark Mode.
+- Support keyboard-based form submission using Ctrl+Enter.
+- Process messages locally without requiring a paid external API.
 
 ## Technology Stack
 
 - Python 3.13
 - Streamlit
 - Regular Expressions (Regex)
+- Python `ipaddress` and `urllib.parse` modules
 - Git and GitHub
 
 ## Run Locally
@@ -58,22 +63,38 @@ SafeSpace Shield helps users understand potential warning signs in suspicious me
    python -m streamlit run app.py
    ```
 
+7. Open the local URL displayed in your terminal.
+
 ## Run the Detection Tests
+
+Run the test suite using:
 
 ```bash
 python test_analyzer.py
 ```
 
+The tests cover:
+
+- Suspicious keyword detection.
+- URL pattern detection and extraction.
+- IP-based URL detection.
+- False-positive handling.
+- Risk scoring.
+- Educational-context handling.
+- Threat explanations and safety recommendations.
+- Empty, whitespace-only, and long-message inputs.
+
 ## Privacy
 
-Messages are analyzed locally by the application. The current version does not require users to create accounts or submit messages to a paid external API.
+Messages are processed locally by the application. The current version does not require users to create accounts or submit messages to a paid external API.
 
 ## Important Limitations
 
-- Detection is based on predefined keywords and URL patterns.
-- Risk levels are heuristic indicators, not probabilities.
+- Detection relies on predefined keywords, URL patterns, and heuristic rules.
+- Risk scores are indicators, not probabilities of malicious activity.
 - A Low Risk result does not guarantee that a message is safe.
 - The application does not verify the reputation or actual maliciousness of a website.
+- Detection results should be treated as cybersecurity guidance, not a substitute for professional security tools.
 
 Always verify suspicious requests through official communication channels.
 
