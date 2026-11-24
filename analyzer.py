@@ -1,6 +1,5 @@
-
 # SafeSpace Shield - Detection Engine
-
+import tldextract
 import re
 import ipaddress
 from urllib.parse import urlparse
@@ -81,13 +80,14 @@ def detect_suspicious_keywords(message):
 
 
 
+
 def detect_suspicious_url_patterns(message):
 
     detected_url_patterns = []
 
     message = message.lower()
 
-    # Extract domain-based and IP-based URLs.
+    # Extract URLs.
     urls = re.findall(
         r'''(?<![@\w.-])(?:https?://|www\.)?(?:(?:[A-Za-z0-9-]+\.)+[A-Za-z]{2,}|(?:\d{1,3}\.){3}\d{1,3})(?::\d{1,5})?(?:[/?#][^\s<>"']*)?''',
         message,
@@ -95,18 +95,24 @@ def detect_suspicious_url_patterns(message):
     )
 
     # Remove punctuation at the end of URLs.
-    urls = [
-        url.rstrip(".,!?;:)]}")
-        for url in urls
-    ]
+    urls = [url.rstrip(".,!?;:)]}") for url in urls]
 
-    # Check suspicious patterns only inside URLs.
     for url in urls:
+
+        # Parse the URL to get its hostname.
+        parsed_url = urlparse(
+            url if "://" in url else "//" + url
+        )
+
+        hostname = parsed_url.hostname or ""
+
         for pattern in SUSPICIOUS_URL_KEYWORDS:
-            if pattern in url and pattern not in detected_url_patterns:
+
+            if pattern in hostname and pattern not in detected_url_patterns:
                 detected_url_patterns.append(pattern)
 
     return detected_url_patterns
+
 
 
 def detect_ip_based_urls(message):
