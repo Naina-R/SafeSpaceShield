@@ -706,3 +706,23 @@ assert result["risk_level"] == "Low"
 print("Test 3 passed: 5000-character harmless message.")
 
 print("All input robustness tests passed!")
+
+# Overlapping keyword detection test
+
+message = "Government verification required"
+
+results = detect_suspicious_keywords(message)
+
+assert results == ["government verification required"]
+
+print("Overlapping keyword test passed!")
+
+# Word boundary regression test
+
+message = "This is an urgentmatter"
+
+results = detect_suspicious_keywords(message)
+
+assert "urgent" not in results
+
+print("Word boundary test passed!")

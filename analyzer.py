@@ -10,7 +10,6 @@ SUSPICIOUS_KEYWORDS = [
     "immediately",
     "account blocked",
     "account is blocked",
-    "account suspended",
     "verify your account",
     "click here",
     "limited time",
@@ -66,12 +65,17 @@ SUSPICIOUS_URL_KEYWORDS = [
 
 def detect_suspicious_keywords(message):
     detected_keywords = []
-
     message = message.lower()
 
-    for keyword in SUSPICIOUS_KEYWORDS:
-        if keyword in message:
-            detected_keywords.append(keyword)
+    for keyword in sorted(SUSPICIOUS_KEYWORDS, key=len, reverse=True):
+        pattern = r"(?<!\w)" + re.escape(keyword) + r"(?!\w)"
+
+        if re.search(pattern, message):
+            if not any(
+                keyword in detected
+                for detected in detected_keywords
+            ):
+                detected_keywords.append(keyword)
 
     return detected_keywords
 
