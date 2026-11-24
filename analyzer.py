@@ -106,9 +106,13 @@ def detect_suspicious_url_patterns(message):
 
         hostname = parsed_url.hostname or ""
 
+        # Extract the registered domain.
+        domain_info = tldextract.extract(hostname)
+        registered_domain = domain_info.domain.lower()
+
         for pattern in SUSPICIOUS_URL_KEYWORDS:
 
-            if pattern in hostname and pattern not in detected_url_patterns:
+            if pattern in registered_domain and pattern not in detected_url_patterns:
                 detected_url_patterns.append(pattern)
 
     return detected_url_patterns
